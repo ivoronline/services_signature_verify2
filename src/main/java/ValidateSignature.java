@@ -26,6 +26,7 @@ public class ValidateSignature {
   //================================================================================
   public static void main(String[] args) throws Exception {
 
+    //VALIDATE SIGNATURE
     Document                 document  = readXMLFromFile(fileXMLInput2);
     KeyStore.PrivateKeyEntry keyPair   = getKeyPair(keyStoreName, keyStorePassword, keyStoreType, keyAlias);
     PublicKey                publicKey = keyPair.getCertificate().getPublicKey();
@@ -39,14 +40,18 @@ public class ValidateSignature {
   //================================================================================
   // VALIDATE SIGNATURE
   //================================================================================
-  private static boolean validateSignature(Document document, String elementName, PublicKey publicKey) throws Exception  {
+  private static boolean validateSignature(
+    Document  document,
+    String    elementName,
+    PublicKey publicKey
+  ) throws Exception  {
 
     //GET SIGNATURE NODE
     Node signatureNode = document.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature").item(0);
 
     //VALIDATE SIGNATURE
     DOMValidateContext  valContext = new DOMValidateContext(publicKey, signatureNode);
-                        valContext.setIdAttributeNS((Element) signatureNode.getParentNode(), null, "Id");  //FIX
+                        valContext.setIdAttributeNS((Element) signatureNode.getParentNode(),null,"Id");  //FIX
     XMLSignatureFactory factory    = XMLSignatureFactory.getInstance("DOM");
     XMLSignature        signature  = factory.unmarshalXMLSignature(valContext);
     boolean             valid      = signature.validate(valContext);
@@ -55,7 +60,6 @@ public class ValidateSignature {
     return valid;
 
   }
-
 
   //================================================================================
   // READ XML FROM FILE
