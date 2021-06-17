@@ -8,6 +8,7 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
 
@@ -18,28 +19,35 @@ public class XMLUtil {
   //================================================================================
   // Document document = readXMLFromFile(fileXMLInput);
   public static Document readXMLFromFile(String fileName) throws Exception {
+
+    //READ DOCUMENT FROM FILE
     DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-    documentFactory.setNamespaceAware(true);
-    Document document = documentFactory.newDocumentBuilder().parse(new FileInputStream(fileName));
+                           documentFactory.setNamespaceAware(true);
+    InputStream            inputStream     = XMLUtil.class.getResourceAsStream(fileName);
+    Document               document        = documentFactory.newDocumentBuilder().parse(inputStream);
+
+    //RETURN DOCUMENT
     return document;
+
   }
 
   //================================================================================
   // GET PRIVATE KEY PAIR
   //================================================================================
   public static KeyStore.PrivateKeyEntry getPrivateKeyPair(
-    String keyStoreName,        //"src/main/resources/ClientKeyStore.jks"
+    String keyStoreName,        //"/ClientKeyStore.jks"
     String keyStorePassword,    //"mypassword";
     String keyStoreType,        //"JKS"
     String keyAlias             //"clientkeys1"
   ) throws Exception {
 
     //GET PRIVATE KEY
+    InputStream                 inputStream = XMLUtil.class.getResourceAsStream(keyStoreName);
     char[]                      password    = keyStorePassword.toCharArray();    //For KeyStore & Private Key
     KeyStore                    keyStore    = KeyStore.getInstance(keyStoreType);
-                                keyStore.load(new FileInputStream(keyStoreName), password);
-    KeyStore.PasswordProtection keyPassword = new KeyStore.PasswordProtection(   password);
-    KeyStore.PrivateKeyEntry    keyPair = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias,keyPassword);
+                                keyStore.load(inputStream, password);
+    KeyStore.PasswordProtection keyPassword = new KeyStore.PasswordProtection(password);
+    KeyStore.PrivateKeyEntry    keyPair = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, keyPassword);
 
     //RETURN KEY PAIR
     return keyPair;
