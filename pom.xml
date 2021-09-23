@@ -15,7 +15,6 @@
 
   <build>
     <plugins>
-
      <!-- Build executable JAR -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -31,7 +30,6 @@
           </archive>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 
